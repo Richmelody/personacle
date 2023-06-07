@@ -1,2 +1,2 @@
 # personacle
-git repository for the personacle project
+Repository for the personacle project
