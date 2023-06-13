@@ -8,11 +8,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Dyrynda\Database\Support\GeneratesUuid;
-use Dyrynda\Database\Support\BindsOnUuid;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, BindsOnUuid, GeneratesUuid;
+    use HasApiTokens, HasFactory, Notifiable, GeneratesUuid;
 
     /**
      * The attributes that are mass assignable.
