@@ -33,7 +33,7 @@ class UpdateQuestionRequest extends FormRequest
             'data.id' => ['required', 'numeric'],
             'data.type' => ['required', 'in:questions'],
             'data.attributes' => ['sometimes', 'required', 'array'],
-            'data.attributes.type' => ['sometimes', 'required', 'string', Rule::in(QuestionType::values()),],
+            'data.attributes.category_id' => ['sometimes', 'required', 'numeric', 'exists:categories,id'],
             'data.attributes.question' => ['sometimes', 'required', 'string'],
             'data.attributes.min_score' => ['sometimes', 'required', 'integer', 'different:data.attributes.max_score'],
             'data.attributes.max_score' => ['sometimes', 'required', 'integer', 'different:data.attributes.min_score'],

@@ -32,7 +32,7 @@ class StoreQuestionRequest extends FormRequest
             'data' => 'required|array',
             'data.type' => 'required|in:questions',
             'data.attributes' => 'required|array',
-            'data.attributes.type' => ['required', 'string', Rule::in(QuestionType::values()),],
+            'data.attributes.category_id' => ['required', 'numeric', 'exists:categories,id'],
             'data.attributes.question' => 'required|string',
             'data.attributes.min_score' => 'required|integer|different:data.attributes.max_score',
             'data.attributes.max_score' => 'required|integer|different:data.attributes.min_score',

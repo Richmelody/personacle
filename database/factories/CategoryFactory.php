@@ -6,9 +6,9 @@ use App\Enums\QuestionType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Question>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Category>
  */
-class QuestionFactory extends Factory
+class CategoryFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,12 +17,13 @@ class QuestionFactory extends Factory
      */
     public function definition(): array
     {
+        $type = $this->faker->randomElement(QuestionType::cases());
+        $subtype = $this->faker->randomElement(QuestionType::getSubTypesByType($type));
+
         return [
             'uuid' => $this->faker->uuid(),
-            'question' => $this->faker->sentence() . '?',
-            'min_score' => 1,
-            'max_score' => 5,
-            'score_step' => 1,
+            'type' => $type->value,
+            'subtype' => $subtype,
         ];
     }
 }

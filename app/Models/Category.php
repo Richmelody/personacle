@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Dyrynda\Database\Support\GeneratesUuid;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Question extends Model
+class Category extends Model
 {
     use HasFactory, GeneratesUuid;
 
@@ -18,18 +18,15 @@ class Question extends Model
      */
     protected $fillable = [
         'uuid',
-        'category_id',
-        'question',
-        'min_score',
-        'max_score',
-        'score_step',
+        'type',
+        'subtype',
     ];
 
     /**
-     * Get the category that owns the question.
+     * Get the questions for the category
      */
-    public function category(): BelongsTo
+    public function questions(): HasMany
     {
-        return $this->belongsTo(Category::class);
+        return $this->hasMany(Question::class);
     }
 }

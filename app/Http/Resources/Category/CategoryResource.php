@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Question;
+namespace App\Http\Resources\Category;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class QuestionResource extends JsonResource
+class CategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,13 +16,10 @@ class QuestionResource extends JsonResource
     {
         return [
             'id' => (string)$this->id,
-            'type' => 'questions',
+            'type' => 'categories',
             'attributes' => [
-                'category_id' => (string)$this->category->id,
-                'question' => $this->question,
-                'min_score' => $this->min_score,
-                'max_score' => $this->max_score,
-                'score_step' => $this->score_step,
+                'type' => $this->type,
+                'subtype' => $this->subtype,
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at,
             ]

@@ -28,4 +28,27 @@ enum QuestionType: string
 
         return $array;
     }
+
+    public static function getSubTypesByType(self|string $type)
+    {
+        $type = \is_string($type) ? $type : $type->value;
+
+        $subtypes = [
+            'temperament' => [
+                'choleric',
+                'sanguine',
+                'phlegmatic',
+                'melancholy'
+            ],
+            'personality trait' => [
+                'openness to experience',
+                'conscientiousness',
+                'extraversion',
+                'agreeableness',
+                'neuroticism'
+            ],
+        ];
+
+        return $subtypes[$type];
+    }
 }
