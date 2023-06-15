@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\V1\AnswerController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\QuestionController;
@@ -20,16 +21,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
-    Route::prefix('user')->name('user.')->group(function ()
-    {
+    Route::prefix('user')->name('user.')->group(function () {
         Route::get('/', fn (Request $request) => $request->user())->name('index');
-    
+
         Route::get('unanswered_questions', [QuestionController::class, 'indexByUnanswered'])->name('unanswered_questions');
-        
+
         Route::apiResource('answers', AnswerController::class);
-        
+
         Route::get('results', ResultController::class)->name('results.show');
     });
 
@@ -41,36 +40,12 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::post('/categories/{category}/questions', [QuestionController::class, 'storeByCategory'])->name('categories.questions.store');
 });
 
-/**
- * {
- *      "data": {
- *          "type": "answers",
- *          "attributes": [
- *              {
- *                  "question_id": 1,
- *                  "score": 5,
- *              },
- *              {
- *                  "question_id": 2,
- *                  "score": 4,
- *              },
- *              {
- *                  "question_id": 3,
- *                  "score": 4,
- *              },
- *          ]
- *      }
- * }
- * or
- * {
- *      "data": {
- *          "type": "answers",
- *          "attributes": [
- *              {
- *                  "question_id": 1,
- *                  "score": 5,
- *              },
- *          ]
- *      }
- * }
- */
+Route::prefix('v1/auth')->as('auth.')->group(function () {
+    Route::middleware(['auth:sanctum'])
+        ->post('logout', [AuthController::class, 'logout'])
+        ->name('logout');
+
+    Route::post('/test', [AuthController::class, 'test'])->name('test');
+    Route::post('/signup', [AuthController::class, 'signup'])->name('signup');
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
+});

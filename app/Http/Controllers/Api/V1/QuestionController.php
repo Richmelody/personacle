@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Question\StoreQuestionByCategoryRequest;
-use App\Http\Requests\Question\StoreQuestionRequest;
-use App\Http\Requests\Question\UpdateQuestionRequest;
-use App\Http\Resources\Category\CategoryResource;
-use App\Http\Resources\Question\QuestionResource;
+use App\Http\Requests\Api\V1\Question\StoreQuestionByCategoryRequest;
+use App\Http\Requests\Api\V1\Question\StoreQuestionRequest;
+use App\Http\Requests\Api\V1\Question\UpdateQuestionRequest;
+use App\Http\Resources\Api\V1\Category\CategoryResource;
+use App\Http\Resources\Api\V1\Question\QuestionResource;
 use App\Models\Category;
 use App\Models\Question;
 use Illuminate\Http\Request;

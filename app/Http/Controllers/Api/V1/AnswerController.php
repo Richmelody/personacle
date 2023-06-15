@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Answer;
-use App\Http\Requests\Answer\StoreAnswerRequest;
-use App\Http\Requests\Answer\UpdateAnswerRequest;
-use App\Http\Resources\Answer\AnswerResource;
+use App\Http\Requests\Api\V1\Answer\StoreAnswerRequest;
+use App\Http\Requests\Api\V1\Answer\UpdateAnswerRequest;
+use App\Http\Resources\Api\V1\Answer\AnswerResource;
 use App\Models\User;
 
 class AnswerController extends Controller

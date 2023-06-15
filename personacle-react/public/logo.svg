@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"
+    aria-hidden="true" role="img" width="32" height="32">
+    <defs>
+        <radialGradient cx="21.152%" cy="86.063%" fx="21.152%" fy="86.063%" r="79.941%" id="footer-logo">
+            <stop stop-color="#4fd1c5" offset="0%" />
+            <stop stop-color="#81e6d9" offset="25.871%" />
+            <stop stop-color="#338cf5" offset="100%" />
+        </radialGradient>
+    </defs>
+    <circle cx="16" cy="16" r="16" fill="url(#footer-logo)" fill-rule="nonzero" />
+</svg>
