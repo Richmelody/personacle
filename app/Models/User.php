@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Dyrynda\Database\Support\GeneratesUuid;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -44,4 +45,28 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Get all the answers for this user
+     */
+    public function answers(): HasMany
+    {
+        return $this->hasMany(Answer::class);
+    }
+
+    /**
+     * checks if the answer belongs to this user
+     */
+    public function answerBelongsToUser(Answer $answer)
+    {
+        return $this->answers()->getQuery()->where('question_id', $answer->question_id)->exists();
+    }
+
+    /**
+     * check if the user has answered all the questions
+     */
+    public function completelyAnswered()
+    {
+        return Question::query()->count() == $this->answers()->count();
+    }
 }

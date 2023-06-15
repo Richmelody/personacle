@@ -1,7 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AnswerController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\QuestionController;
+use App\Http\Controllers\Api\V1\ResultController;
+use App\Http\Resources\Question\QuestionResource;
+use App\Models\Question;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,12 +22,55 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
+    Route::prefix('user')->name('user.')->group(function ()
+    {
+        Route::get('/', fn (Request $request) => $request->user())->name('index');
+    
+        Route::get('unanswered_questions', [QuestionController::class, 'indexByUnanswered'])->name('unanswered_questions');
+        
+        Route::apiResource('answers', AnswerController::class);
+        
+        Route::get('results', ResultController::class)->name('results.show');
     });
 
     Route::apiResources([
         'questions' => QuestionController::class,
-        'categories'=> CategoryController::class
+        'categories' => CategoryController::class
     ]);
+    Route::get('/categories/{category}/questions', [QuestionController::class, 'indexByCategory'])->name('categories.questions.index');
+    Route::post('/categories/{category}/questions', [QuestionController::class, 'storeByCategory'])->name('categories.questions.store');
 });
+
+/**
+ * {
+ *      "data": {
+ *          "type": "answers",
+ *          "attributes": [
+ *              {
+ *                  "question_id": 1,
+ *                  "score": 5,
+ *              },
+ *              {
+ *                  "question_id": 2,
+ *                  "score": 4,
+ *              },
+ *              {
+ *                  "question_id": 3,
+ *                  "score": 4,
+ *              },
+ *          ]
+ *      }
+ * }
+ * or
+ * {
+ *      "data": {
+ *          "type": "answers",
+ *          "attributes": [
+ *              {
+ *                  "question_id": 1,
+ *                  "score": 5,
+ *              },
+ *          ]
+ *      }
+ * }
+ */

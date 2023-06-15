@@ -3,21 +3,55 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Question\StoreQuestionByCategoryRequest;
 use App\Http\Requests\Question\StoreQuestionRequest;
 use App\Http\Requests\Question\UpdateQuestionRequest;
+use App\Http\Resources\Category\CategoryResource;
 use App\Http\Resources\Question\QuestionResource;
+use App\Models\Category;
 use App\Models\Question;
+use Illuminate\Http\Request;
 
 class QuestionController extends Controller
 {
+    /**
+     * Display a listing of the unanswered questions for the user.
+     */
+    public function indexByUnanswered(Request $request)
+    {
+        /** @var \App\Models\User */
+        $user = $request->user();
+
+        $answered_questions = $user->answers()->getQuery()->pluck('question_id');
+
+        $unanswered_questions = Question::query()
+            ->whereNotIn('id', $answered_questions->toArray())
+            ->simplePaginate(10, pageName: "unanswered_questions");
+
+        return QuestionResource::collection($unanswered_questions);
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $questions = Question::all();
+        $questions = Question::query()->simplePaginate(10, pageName: "questions");
 
         return QuestionResource::collection($questions);
+    }
+
+    /**
+     * Display a listing of the resource by category.
+     */
+    public function indexByCategory(Category $category)
+    {
+        $questions = $category->questions()
+            ->getQuery()
+            ->simplePaginate(10, pageName: "category_questions");
+
+        return QuestionResource::collection($questions)
+            ->additional(['parent' => CategoryResource::make($category)]);
     }
 
     /**
@@ -32,6 +66,26 @@ class QuestionController extends Controller
         return QuestionResource::make($question)
             ->response()
             ->header('Location', \route('questions.show', \compact('question')));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function storeByCategory(StoreQuestionByCategoryRequest $request, Category $category)
+    {
+        $validated = $request->validated()['data']['attributes'];
+
+        $questions = $category->questions()->createMany($validated);
+
+        if ($questions->count() == 1 && \filled($question = $questions->first())) {
+            return QuestionResource::make($question)
+                ->response()
+                ->header('Location', \route('questions.show', \compact('question')));
+        }
+
+        return QuestionResource::collection($questions)
+            ->response()
+            ->header('Location', \route('categories.questions.index', \compact('category')));
     }
 
     /**

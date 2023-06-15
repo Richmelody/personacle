@@ -15,10 +15,10 @@ class QuestionResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => (string)$this->id,
+            'id' => $this->id,
             'type' => 'questions',
             'attributes' => [
-                'category_id' => (string)$this->category->id,
+                'category_id' => $this->category->id,
                 'question' => $this->question,
                 'min_score' => $this->min_score,
                 'max_score' => $this->max_score,
