@@ -34,9 +34,10 @@ class QuestionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $questions = Question::query()->simplePaginate(10, pageName: "questions");
+        $questions = Question::query()
+            ->get();
 
         return QuestionResource::collection($questions);
     }
