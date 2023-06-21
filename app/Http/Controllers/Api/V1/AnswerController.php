@@ -8,7 +8,7 @@ use App\Http\Requests\Api\V1\Answer\StoreAnswerRequest;
 use App\Http\Requests\Api\V1\Answer\UpdateAnswerRequest;
 use App\Http\Resources\Api\V1\Answer\AnswerResource;
 use App\Models\User;
-use Doctrine\DBAL\Query\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class AnswerController extends Controller
 {
@@ -24,8 +24,7 @@ class AnswerController extends Controller
     {
         $answers = $this->getAuthUser()
             ->answers()
-            ->getQuery()
-            ->simplePaginate(15, pageName: 'answers');
+            ->get();
 
         return AnswerResource::collection($answers);
     }
@@ -40,11 +39,20 @@ class AnswerController extends Controller
 
         $validated = $request->validated()['data']['attributes'];
 
-        //for now, delete all the answers for this user before saving a new set
-        $user->answers()->getQuery()->delete();
+        try {
+            DB::beginTransaction();
+            //for now, delete all the answers for this user before saving a new set
+            $user->answers()->getQuery()->delete();
+    
+            // create all the answers for the user
+            $answers = $user->answers()->createMany($validated);
+            
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
 
-        // create all the answers for the user
-        $answers = $user->answers()->createMany($validated);
+            abort(500, 'Could not save answers');
+        }
 
         if ($answers->count() == 1 && \filled($answer = $answers->first())) {
             return AnswerResource::make($answer)

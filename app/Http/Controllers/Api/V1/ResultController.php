@@ -18,14 +18,17 @@ class ResultController extends Controller
         $user = Auth::user();
 
         if (!$user->completelyAnswered()) {
-            return \response()->json([
-                "errors" => [
-                    [
-                        "title" => "Validation error",
-                        "detail" => "You have some unanswered questions. Answer all the questions to get the result."
+            return \response()->json(
+                [
+                    "errors" => [
+                        [
+                            "title" => "Validation error",
+                            "detail" => "You have some unanswered questions. Answer all the questions to get the result."
+                        ]
                     ]
-                ]
-            ]);
+                ],
+                422
+            );
         }
 
         return ResultCollection::make($user->calculateResult())
