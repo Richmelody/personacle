@@ -19,7 +19,7 @@ class QuestionResource extends JsonResource
             'type' => 'questions',
             'attributes' => [
                 'category_id' => $this->category->id,
-                'question' => $this->question,
+                'question' => $this->question . '?',
                 'min_score' => $this->min_score,
                 'max_score' => $this->max_score,
                 'score_step' => $this->score_step,

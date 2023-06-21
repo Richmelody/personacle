@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\V1\Result\ResultCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,22 +28,7 @@ class ResultController extends Controller
             ]);
         }
 
-        return \response()
-            ->json([
-                'temperament' => [
-                    'primary' => 'sanguine',
-                    'secondary' => [
-                        'title' => 'choleric',
-                        'score' => 0.6
-                    ]
-                ],
-                'personality_trait' => [
-                    'conscientiousness' => 0.6,
-                    'openness to experience' => 0.7,
-                    'neuroticism' => 0.6,
-                    'extraversion' => 0.5,
-                    'agreeableness' => 0.5
-                ]
-            ]);
+        return ResultCollection::make($user->calculateResult())
+            ->response();
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Requests\Api\V1\Answer\StoreAnswerRequest;
 use App\Http\Requests\Api\V1\Answer\UpdateAnswerRequest;
 use App\Http\Resources\Api\V1\Answer\AnswerResource;
 use App\Models\User;
+use Doctrine\DBAL\Query\QueryException;
 
 class AnswerController extends Controller
 {
@@ -39,17 +40,19 @@ class AnswerController extends Controller
 
         $validated = $request->validated()['data']['attributes'];
 
+        //for now, delete all the answers for this user before saving a new set
+        $user->answers()->getQuery()->delete();
+
+        // create all the answers for the user
         $answers = $user->answers()->createMany($validated);
 
         if ($answers->count() == 1 && \filled($answer = $answers->first())) {
             return AnswerResource::make($answer)
-                ->response()
-                ->header('Location', \route('answers.show', \compact('answer')));
+                ->response();
         }
 
         return AnswerResource::collection($answers)
-            ->response()
-            ->header('Location', \route('answers.index'));
+            ->response();
     }
 
     /**

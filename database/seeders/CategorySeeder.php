@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Uuid;
 
 class CategorySeeder extends Seeder
 {
@@ -12,10 +14,12 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        $categories = [
+        $timestamp = \now();
+
+        $categories = collect([
             [
                 "type" => "temperament",
-                "subtype" => "sanguine"
+                "subtype" => "melancholy"
             ],
             [
                 "type" => "temperament",
@@ -27,7 +31,7 @@ class CategorySeeder extends Seeder
             ],
             [
                 "type" => "temperament",
-                "subtype" => "melancholy"
+                "subtype" => "sanguine"
             ],
             [
                 "type" => "personality trait",
@@ -49,6 +53,18 @@ class CategorySeeder extends Seeder
                 "type" => "personality trait",
                 "subtype" => "neuroticism"
             ],
-        ];
+        ]);
+
+        $categories->transform(function ($category) use ($timestamp)
+        {
+            return [
+                "uuid" => Uuid::uuid4()->toString(),
+                ...$category,
+                'created_at' => $timestamp,
+                'updated_at' => $timestamp
+            ];
+        });
+        
+        DB::table('categories')->insert($categories->toArray());
     }
 }
