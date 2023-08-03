@@ -9,6 +9,7 @@ use App\Http\Requests\Api\V1\Answer\UpdateAnswerRequest;
 use App\Http\Resources\Api\V1\Answer\AnswerResource;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Uuid;
 
 class AnswerController extends Controller
 {
@@ -37,22 +38,13 @@ class AnswerController extends Controller
         /** @var \App\Models\User */
         $user = $request->user();
 
-        $validated = $request->validated()['data']['attributes'];
+        $validated = collect($request->validated()['data']['attributes'])
+            ->transform(fn ($answer) => ['uuid' => Uuid::uuid4()->toString(), 'user_id' => $user->id, ...$answer])
+            ->toArray();
 
-        try {
-            DB::beginTransaction();
-            //for now, delete all the answers for this user before saving a new set
-            $user->answers()->getQuery()->delete();
-    
-            // create all the answers for the user
-            $answers = $user->answers()->createMany($validated);
-            
-            DB::commit();
-        } catch (\Exception $ex) {
-            DB::rollBack();
+        DB::table('answers')->upsert($validated, ['user_id', 'question_id'], ['score']);
 
-            abort(500, 'Could not save answers');
-        }
+        $answers = $user->answers()->get();
 
         if ($answers->count() == 1 && \filled($answer = $answers->first())) {
             return AnswerResource::make($answer)

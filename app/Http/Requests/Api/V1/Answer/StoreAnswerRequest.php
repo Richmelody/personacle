@@ -26,7 +26,7 @@ class StoreAnswerRequest extends FormRequest
             'data' => 'required|array',
             'data.type' => 'required|in:answers',
             'data.attributes' => 'required|array',
-            'data.attributes.*.question_id' => 'required|integer|exists:questions,id|distinct:strict',
+            'data.attributes.*.question_id' => ['required', 'integer', 'exists:questions,id', 'distinct:strict'],
             'data.attributes.*.score' => [
                 'required',
                 'numeric',
